@@ -6,13 +6,13 @@ require File.join(File.dirname(__FILE__), 'stack_item')
 # * Wrapper class for manipulating the extensions to the Time, Date, and DateTime objects
 # * Allows us to "freeze" time in our Ruby applications.
 # * Optionally allows time travel to simulate a running clock, such time is not technically frozen.
-# 
-# This is very useful when your app's functionality is dependent on time (e.g. 
+#
+# This is very useful when your app's functionality is dependent on time (e.g.
 # anything that might expire).  This will allow us to alter the return value of
 # Date.today, Time.now, and DateTime.now, such that our application code _never_ has to change.
 class Timecop
   include Singleton
-  
+
   # Allows you to run a block of code and "fake" a time throughout the execution of that block.
   # This is particularly useful for writing test methods where the passage of time is critical to the business
   # logic being tested.  For example:
@@ -32,16 +32,16 @@ class Timecop
   # 5. Timecop.freeze(year, month, day, hour=0, minute=0, second=0)
   #
   # When a block is also passed, Time.now, DateTime.now and Date.today are all reset to their
-  # previous values after the block has finished executing.  This allows us to nest multiple 
+  # previous values after the block has finished executing.  This allows us to nest multiple
   # calls to Timecop.travel and have each block maintain it's concept of "now."
   #
   # * Note: Timecop.freeze will actually freeze time.  This can cause unanticipated problems if
   #   benchmark or other timing calls are executed, which implicitly expect Time to actually move
   #   forward.
   #
-  # * Rails Users: Be especially careful when setting this in your development environment in a 
-  #   rails project.  Generators will load your environment, including the migration generator, 
-  #   which will lead to files being generated with the timestamp set by the Timecop.freeze call 
+  # * Rails Users: Be especially careful when setting this in your development environment in a
+  #   rails project.  Generators will load your environment, including the migration generator,
+  #   which will lead to files being generated with the timestamp set by the Timecop.freeze call
   #   in your dev environment
   #
   # Returns the frozen time.
@@ -49,7 +49,7 @@ class Timecop
     instance().send(:travel, :freeze, *args, &block)
     Time.now
   end
-  
+
   # Allows you to run a block of code and "fake" a time throughout the execution of that block.
   # See Timecop#freeze for a sample of how to use (same exact usage syntax)
   #
@@ -61,7 +61,7 @@ class Timecop
     instance().send(:travel, :move, *args, &block)
     Time.now
   end
-  
+
   # Reverts back to system's Time.now, Date.today and DateTime.now (if it exists). If freeze_all or rebase_all
   # was never called in the first place, this method will have no effect.
   #
@@ -72,53 +72,53 @@ class Timecop
   end
 
   protected
-  
-    def initialize #:nodoc:
-      @_stack = []
-    end
-    
-    def travel(mock_type, *args, &block) #:nodoc:
-      # parse the arguments, build our base time units
-      year, month, day, hour, minute, second = parse_travel_args(*args)
 
-      # perform our action
-      if mock_type == :freeze
-        freeze_all(year, month, day, hour, minute, second)
-      else
-        move_all(year, month, day, hour, minute, second)
-      end
-      # store this time traveling on our stack...
-      @_stack << StackItem.new(mock_type, year, month, day, hour, minute, second)
-    
-      if block_given?
-        begin
-          yield
-        ensure
-          # pull it off the stack...
-          stack_item = @_stack.pop
-          if @_stack.size == 0
-            # completely unmock if there's nothing to revert back to 
-            unmock!
+  def initialize #:nodoc:
+    @_stack = []
+  end
+
+  def travel(mock_type, *args, &block) #:nodoc:
+    # parse the arguments, build our base time units
+    year, month, day, hour, minute, second = parse_travel_args(*args)
+
+    # perform our action
+    if mock_type == :freeze
+      freeze_all(year, month, day, hour, minute, second)
+    else
+      move_all(year, month, day, hour, minute, second)
+    end
+    # store this time traveling on our stack...
+    @_stack << StackItem.new(mock_type, year, month, day, hour, minute, second)
+
+    if block_given?
+      begin
+        yield
+      ensure
+        # pull it off the stack...
+        stack_item = @_stack.pop
+        if @_stack.size == 0
+          # completely unmock if there's nothing to revert back to
+          unmock!
+        else
+          # or reinstantiate the new the top of the stack (could be a :freeze or a :move)
+          new_top = @_stack.last
+          if new_top.mock_type == :freeze
+            freeze_all(new_top.year, new_top.month, new_top.day, new_top.hour, new_top.minute, new_top.second)
           else
-            # or reinstantiate the new the top of the stack (could be a :freeze or a :move)
-            new_top = @_stack.last
-            if new_top.mock_type == :freeze
-              freeze_all(new_top.year, new_top.month, new_top.day, new_top.hour, new_top.minute, new_top.second)
-            else
-              move_all(new_top.year, new_top.month, new_top.day, new_top.hour, new_top.minute, new_top.second)
-            end
+            move_all(new_top.year, new_top.month, new_top.day, new_top.hour, new_top.minute, new_top.second)
           end
         end
       end
     end
-  
-    def unmock! #:nodoc:
-      @_stack = []
-      Time.unmock!
-    end
-  
+  end
+
+  def unmock! #:nodoc:
+    @_stack = []
+    Time.unmock!
+  end
+
   private
-  
+
     # Re-bases Time.now, Date.today and DateTime.now (if it exists) to use the time passed in.
     # When using this method directly, it is up to the developer to call unset_all to return us
     # to sanity.
@@ -129,11 +129,11 @@ class Timecop
       if Time.respond_to?(:zone) && !Time.zone.nil?
         # ActiveSupport loaded
         time = Time.zone.local(year, month, day, hour, minute, second)
-      else 
+      else
         # ActiveSupport not loaded
         time = Time.local(year, month, day, hour, minute, second)
       end
-    
+
       Time.freeze_time(time)
     end
 
@@ -147,14 +147,14 @@ class Timecop
       if Time.respond_to?(:zone) && !Time.zone.nil?
         # ActiveSupport loaded
         time = Time.zone.local(year, month, day, hour, minute, second)
-      else 
+      else
         # ActiveSupport not loaded
         time = Time.local(year, month, day, hour, minute, second)
       end
-    
+
       Time.move_time(time)
     end
-    
+
     def parse_travel_args(*args)
       arg = args.shift
       if arg.is_a?(Time) || (Object.const_defined?(:DateTime) && arg.is_a?(DateTime))

@@ -10,8 +10,8 @@ class Time #:nodoc:
     # Time we might be behaving as
     #attr_reader :mock_time
 
-    TIME_CACHE_PATH = File.join('..', 'cache', 'time.cache')
-    OFFSET_CACHE_PATH = File.join('..', 'cache', 'offset.cache')
+    TIME_CACHE_PATH = File.expand_path('~/.timecop-cache.time.cache')
+    OFFSET_CACHE_PATH = File.expand_path('~/.timecop-cache.offset.cache')
 
     def mock_time_cache
       if File.exist?(TIME_CACHE_PATH)

@@ -68,8 +68,7 @@ in config/environments/test.rb
 
 == INSTALL
 
-* sudo gem install timecop (latest stable version from rubyforge)
-* sudo gem install jtrupiano-timecop (HEAD of the repo from github)
+* sudo gem install timecop-cache
 
 == REFERENCES
 

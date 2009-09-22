@@ -2,9 +2,13 @@
 
 * http://github.com/jtrupiano/timecop
 
+== WHAT THIS FORK DOES
+
+This is a fork of the Timecop gem. This fork make use of file caches to store the offset and values of the mock time objects. This allows different processes to read and write to the mock objects. The motivation is to enable Culerity to use timecop
+
 == DESCRIPTION
 
-A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code.  It provides a unified method to mock Time.now, Date.today, and DateTime.now in a single call.
+A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code.  It provides a unified method to mock Time.now, Date.today, and DateTime.now in a single call. 
 
 == FEATURES
 

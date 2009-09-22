@@ -26,7 +26,6 @@ Gem::Specification.new do |s|
      "lib/timecop/stack_item.rb",
      "lib/timecop/time_extensions.rb",
      "lib/timecop/timecop.rb",
-     "test/offset.cache",
      "test/run_tests.sh",
      "test/test_timecop.rb",
      "test/test_timecop_internals.rb",

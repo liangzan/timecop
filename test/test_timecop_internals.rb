@@ -1,10 +1,8 @@
-
 require 'date'
-require 'test/unit'
-require File.join(File.dirname(__FILE__), '..', 'lib', 'timecop')
+require File.join(File.dirname(__FILE__), 'test_helper')
 
 class TestTimecopInternals < Test::Unit::TestCase
-  
+
   def test_parse_travel_args_with_time
     t = Time.now
     y, m, d, h, min, s = t.year, t.month, t.day, t.hour, t.min, t.sec

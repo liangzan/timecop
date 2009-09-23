@@ -68,7 +68,7 @@ in config/environments/test.rb
 
 == INSTALL
 
-* sudo gem install timecop-cache
+* sudo gem install liangzan-timecop
 
 == REFERENCES
 

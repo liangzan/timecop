@@ -13,6 +13,11 @@ class Time #:nodoc:
     TIME_CACHE_PATH = File.expand_path('~/.timecop-cache.time.cache')
     OFFSET_CACHE_PATH = File.expand_path('~/.timecop-cache.offset.cache')
 
+    def clear_mock_cache
+      clear_mock_time_cache
+      clear_mock_offset_cache
+    end
+
     def mock_time_cache
       if File.exist?(TIME_CACHE_PATH)
         File.open(TIME_CACHE_PATH,'r') do |f|

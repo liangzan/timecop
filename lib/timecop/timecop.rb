@@ -75,6 +75,7 @@ class Timecop
 
   def initialize #:nodoc:
     @_stack = []
+    Time.clear_mock_cache
   end
 
   def travel(mock_type, *args, &block) #:nodoc:

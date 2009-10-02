@@ -12,38 +12,36 @@ Two timecop cache files are created in your home directory. They are .timecop-ca
 
 == Cucumber Usage
 
-#Cucumber  feature
-Scenario: Invitees receives reminder email when event approaches
-  Given event "Weather Conference" is published
-  And the event starts at "2006-March-3 00:00"
-  And the event has set reminder emails to be sent "2" days before the event starts
-  And the event has the following invitees:
-  """
-  aaa@amail.com, bbb@bmail.com, ccc@cmail.com
-  """
-  And the time now is "1-3-2006 00:00"
-  When the scheduler sends the reminder emails
-  Then "aaa@amail.com, bbb@bmail.com, ccc@cmail.com" should receive a "Reminder to attend Weather Conference" email 
+  #Cucumber  feature
+    Scenario: Invitees receives reminder email when event approaches
+      Given event "Weather Conference" is published
+      And the event starts at "2006-March-3 00:00"
+      And the event has set reminder emails to be sent "2" days before the event starts
+      And the event has the following invitees:
+      """
+      aaa@amail.com, bbb@bmail.com, ccc@cmail.com
+      """
+      And the time now is "1-3-2006 00:00"
+      When the scheduler sends the reminder emails
+      Then "aaa@amail.com, bbb@bmail.com, ccc@cmail.com" should receive a "Reminder to attend Weather Conference" email 
 
+  #In your step definitions 
+  Given /^the time now is "(\d+)-(\d+)-(\d+) (\d\d):(\d\d)"$/ do |day, month, year, hr, min|
+    Timecop.freeze(Time.local(year, month, day, hr, min))
+  end
 
-#In your step definitions 
-Given /^the time now is "(\d+)-(\d+)-(\d+) (\d\d):(\d\d)"$/ do |day, month, year, hr, min|
-  Timecop.freeze(Time.local(year, month, day, hr, min))
-end
+  #In your env.rb
+  #Clearing the time caches
+  Before do
+    clear_time_cache
+  end
 
-#In your env.rb
-#Clearing the time caches
-Before do
-  clear_time_cache
-end
-
-def clear_time_cache
-  time_cache = File.expand_path('~/.timecop-cache.time.cache')
-  offset_cache = File.expand_path('~/.timecop-cache.offset.cache')
-  File.delete(time_cache) if File.exist?(time_cache)
-  File.delete(offset_cache) if File.exist?(offset_cache)
-end
-
+  def clear_time_cache
+    time_cache = File.expand_path('~/.timecop-cache.time.cache')
+    offset_cache = File.expand_path('~/.timecop-cache.offset.cache')
+    File.delete(time_cache) if File.exist?(time_cache)
+    File.delete(offset_cache) if File.exist?(offset_cache)
+  end
 
 == DESCRIPTION
 
